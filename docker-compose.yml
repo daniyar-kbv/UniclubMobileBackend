@@ -20,7 +20,6 @@ services:
       - "8990:8990"
     depends_on:
       - db
-      - rabbit
     links:
       - db
     env_file:
