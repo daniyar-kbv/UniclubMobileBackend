@@ -1,7 +1,7 @@
 FROM python:3
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /uniclub_mobile
-RUN mkdir /uniclub_mobile/staticfiles
+RUN mkdir /uniclub_mobile/static
 RUN mkdir /uniclub_mobile/media
 WORKDIR /uniclub_mobile
 ADD requirements.txt /uniclub_mobile/
