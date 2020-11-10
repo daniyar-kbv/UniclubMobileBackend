@@ -1,32 +1,5 @@
 version: '3'
 services:
-  rabbit:
-    hostname: rabbit
-    image: rabbitmq:3-management
-    ports:
-    - "5673:5672"
-    - "15673:15672"
-    volumes:
-    - rabbit:/var/lib/rabbit
-    - ./rabbit.conf:/etc/rabbit/rabbitmq.conf
-    env_file:
-    - ./.env.rabbit
-  celery:
-    build: .
-    command: celery -A uniclub_mobile worker --pool=solo -l info
-    depends_on:
-    - db
-    - rabbit
-    env_file:
-    - ./.env.prod
-  celery2:
-    build: .
-    command: celery -A uniclub_mobile worker --pool=solo -l info
-    depends_on:
-    - db
-    - rabbit
-    env_file:
-    - ./.env.prod
   db:
     image: postgres
     volumes:
@@ -49,7 +22,6 @@ services:
       - "8990:8990"
     depends_on:
       - db
-      - rabbit
     links:
       - db
     env_file:
@@ -59,4 +31,3 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
-  rabbit:
