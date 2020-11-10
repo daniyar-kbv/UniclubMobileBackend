@@ -128,7 +128,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CELERY_BROKER_URL = os.environ.get('BROKER_URL', 'amqp://localhost')
+CELERY_BROKER_URL = os.environ.get('BROKER_URL', 'amqp://uniclub_mobile_admin:bB<AL`nc}:23,sZ:@rabbit:5673/')
 CELERY_IGNORE_RESULT = False
 CELERY_RESULT_BACKEND = 'amqp'
 
