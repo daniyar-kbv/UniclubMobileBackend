@@ -31,6 +31,8 @@ services:
     - ./.env.prod
   db:
     image: postgres
+    expose:
+      - 5433
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
