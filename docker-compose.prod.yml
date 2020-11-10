@@ -4,7 +4,7 @@ services:
     hostname: rabbit
     image: rabbitmq:3-management
     expose:
-    - 5673
+    - 5672
     ports:
     - "5673:5672"
     - "15673:15672"
@@ -32,7 +32,7 @@ services:
   db:
     image: postgres
     expose:
-      - 5433
+      - 5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
