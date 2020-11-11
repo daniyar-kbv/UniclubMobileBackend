@@ -12,6 +12,7 @@ services:
     build: .
     command: sh -c "/wait &&
       pip install -r requirements.txt &&
+      python manage.py collectstatic --no-input &&
       python manage.py migrate &&
       python manage.py runserver 0:8990"
     volumes:
