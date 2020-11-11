@@ -13,6 +13,7 @@ import constants
 class FilterDataViewSet(GenericViewSet,
                         ListModelMixin):
     queryset = AgeGroup.objects.all()
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.action == 'list':
