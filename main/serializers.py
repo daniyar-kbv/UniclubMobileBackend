@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Course, LessonTime, WeekDay
+from .models import Course, LessonTime, WeekDay, CourseImage
 from other.serializers import AgeGroupSerializer, AttendanceTypeSerializer, AdministrativeDivisionSerializer, \
     GradeTypeGroupSerializer, GradeTypeListSerializer
 
@@ -21,11 +21,16 @@ class WeekdayListSerializer(serializers.ModelSerializer):
 
 class CourseListSerializer(serializers.ModelSerializer):
     weekdays = WeekdayListSerializer(many=True)
-    attendance_type = AttendanceTypeSerializer()
-    administrative_division = AdministrativeDivisionSerializer()
-    grade_group = GradeTypeGroupSerializer()
-    grade_type = GradeTypeListSerializer()
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ['id', 'name', 'description', 'images', 'weekdays']
+
+    def get_images(self, obj):
+        images = CourseImage.objects.filter(course=obj)
+        urls = []
+        for image in images:
+             urls.append(self.context.get('request').build_absolute_uri(image.image.url))
+        return urls
+

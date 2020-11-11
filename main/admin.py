@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from nested_inline.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
-from .models import Course, WeekDay, LessonTime
+from .models import Course, WeekDay, LessonTime, CourseImage
 
 
 class LessonTimeInline(NestedTabularInline):
@@ -17,6 +17,11 @@ class WeekdayInline(NestedTabularInline):
     readonly_fields = ['day']
 
 
+class CourseImageInline(NestedTabularInline):
+    model = CourseImage
+    extra = 0
+
+
 @admin.register(Course)
 class CourseAdmin(NestedModelAdmin):
-    inlines = [WeekdayInline]
+    inlines = [CourseImageInline, WeekdayInline]

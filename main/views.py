@@ -48,3 +48,4 @@ class CourseViewSet(GenericViewSet,
         if self.action == 'list':
             return CourseListSerializer
         return CourseListSerializer
+

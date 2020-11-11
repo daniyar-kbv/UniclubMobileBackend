@@ -1,5 +1,7 @@
 from django.db import models
 
+from PIL import Image, ExifTags
+
 from other.models import AgeGroup, AttendanceType, AdministrativeDivision, GradeTypeGroup, GradeType
 from utils import general
 
@@ -46,6 +48,58 @@ class Course(models.Model):
 
     def __str__(self):
         return f'({self.id}) {self.name}'
+
+
+class CourseImage(models.Model):
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        verbose_name='Курс',
+        related_name='images'
+    )
+    image = models.ImageField(
+        "Изображение",
+        upload_to="course_images/",
+        null=True
+    )
+    is_main = models.BooleanField('Основное', default=False)
+
+    class Meta:
+        verbose_name = 'Фото курса'
+        verbose_name_plural = 'Фото курсов'
+        ordering = ['is_main', 'id']
+
+    def __str__(self):
+        return f'({self.id}) {self.course}'
+
+    def save(self, *args, **kwargs):
+        if self.id is None:
+            saved_image = self.image
+            self.image = None
+            super(CourseImage, self).save(*args, **kwargs)
+            self.image = saved_image
+            if 'force_insert' in kwargs:
+                kwargs.pop('force_insert')
+
+        super(CourseImage, self).save(*args, **kwargs)
+
+        image = Image.open(self.image.path)
+
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+
+        if image._getexif():
+            exif = dict(image._getexif().items())
+
+            if exif.get(orientation) == 3:
+                image = image.rotate(180, expand=True)
+            elif exif.get(orientation) == 6:
+                image = image.rotate(270, expand=True)
+            elif exif.get(orientation) == 8:
+                image = image.rotate(90, expand=True)
+
+        image.save(self.image.path, quality=50, optimize=True)
 
 
 class WeekDay(models.Model):
