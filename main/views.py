@@ -48,10 +48,10 @@ class CourseViewSet(GenericViewSet,
                 queryset = queryset.filter(lessons_start_time__gte=datetime.time(hour=12, minute=0, second=0))
         return queryset.distinct()
 
-    @action(detail=False, methods=['get'])
-    def test_data(self, request, pk=None):
-        test_data.create_courses()
-        return Response()
+    # @action(detail=False, methods=['get'])
+    # def test_data(self, request, pk=None):
+    #     test_data.create_courses()
+    #     return Response()
 
     def get_serializer_class(self):
         if self.action == 'list':
