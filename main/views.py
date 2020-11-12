@@ -8,6 +8,7 @@ from .models import Course
 from .serializers import CourseListSerializer
 from .filters import CoursesMobileFilterBackend
 from other.models import AgeGroup
+from utils import pagination
 
 import constants, datetime
 
@@ -16,7 +17,7 @@ class CourseViewSet(GenericViewSet,
                     ListModelMixin):
     queryset = Course.objects.all()
     filter_backends = [CoursesMobileFilterBackend]
-    pagination_class = PageNumberPagination
+    pagination_class = pagination.CustomPagination
 
     def filter_queryset(self, queryset):
         if self.request.query_params.get('age_group'):
