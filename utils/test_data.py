@@ -3,6 +3,7 @@ from django.core.files import File
 
 from rest_framework import serializers
 from faker import Faker
+from PIL import Image
 
 from main.models import Course, CourseImage, LessonTime, WeekDay
 

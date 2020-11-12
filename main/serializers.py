@@ -33,6 +33,7 @@ class CourseListSerializer(serializers.ModelSerializer):
         images = CourseImage.objects.filter(course=obj)
         urls = []
         for image in images:
-             urls.append(self.context.get('request').build_absolute_uri(image.image.url))
+            url = f'{image.image.url}'.replace('/media/uniclub_mobile/media/test_photos/', '/media/test_photos/')
+            urls.append(self.context.get('request').build_absolute_uri(url))
         return urls
 

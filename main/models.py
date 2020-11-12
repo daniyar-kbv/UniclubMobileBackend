@@ -83,23 +83,24 @@ class CourseImage(models.Model):
 
         super(CourseImage, self).save(*args, **kwargs)
 
-        image = Image.open(self.image.path)
+        if self.image:
+            image = Image.open(self.image.path)
 
-        for orientation in ExifTags.TAGS.keys():
-            if ExifTags.TAGS[orientation] == 'Orientation':
-                break
+            for orientation in ExifTags.TAGS.keys():
+                if ExifTags.TAGS[orientation] == 'Orientation':
+                    break
 
-        if image._getexif():
-            exif = dict(image._getexif().items())
+            if image._getexif():
+                exif = dict(image._getexif().items())
 
-            if exif.get(orientation) == 3:
-                image = image.rotate(180, expand=True)
-            elif exif.get(orientation) == 6:
-                image = image.rotate(270, expand=True)
-            elif exif.get(orientation) == 8:
-                image = image.rotate(90, expand=True)
+                if exif.get(orientation) == 3:
+                    image = image.rotate(180, expand=True)
+                elif exif.get(orientation) == 6:
+                    image = image.rotate(270, expand=True)
+                elif exif.get(orientation) == 8:
+                    image = image.rotate(90, expand=True)
 
-        image.save(self.image.path, quality=50, optimize=True)
+            image.save(self.image.path, quality=50, optimize=True)
 
 
 class WeekDay(models.Model):
