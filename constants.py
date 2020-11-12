@@ -1,3 +1,7 @@
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+DATE_FORMAT = '%Y-%m-%d'
+TIME_FORMAT = '%H:%M:%S'
+
 MONDAY = 0
 TUESDAY = 1
 WEDNESDAY = 2

@@ -4,6 +4,8 @@ from .models import Course, LessonTime, WeekDay, CourseImage
 from other.serializers import AgeGroupSerializer, AttendanceTypeSerializer, AdministrativeDivisionSerializer, \
     GradeTypeGroupSerializer, GradeTypeListSerializer
 
+import random
+
 
 class LessonTimeListSerializer(serializers.ModelSerializer):
     class Meta:
