@@ -43,9 +43,10 @@ class CourseViewSet(GenericViewSet,
             queryset = queryset.filter(grade_type__id=self.request.query_params.get('grade_type'))
         if self.request.query_params.get('time'):
             if self.request.query_params.get('time') == constants.TIME_BEFORE_LUNCH:
-                queryset = queryset.filter(lessons_start_time__lte=datetime.time(hour=12, minute=0, second=0))
+                queryset = queryset.filter(weekdays__lesson_times__from_time__lte=datetime.time(hour=12, minute=0, second=0))
             elif self.request.query_params.get('time') == constants.TIME_AFTER_LUNCH:
-                queryset = queryset.filter(lessons_start_time__gte=datetime.time(hour=12, minute=0, second=0))
+                queryset = queryset.filter(
+                    weekdays__lesson_times__from_time__gte=datetime.time(hour=12, minute=0, second=0))
         return queryset.distinct()
 
     # @action(detail=False, methods=['get'])
