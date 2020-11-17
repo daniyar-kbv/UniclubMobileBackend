@@ -27,11 +27,11 @@ class BookingApplicationCreateSerializer(serializers.ModelSerializer):
             if time.weekday.course not in courses:
                 courses.append(time.weekday.course)
         for course in courses:
-            CourseBooking.objects.create(
+            booking = CourseBooking.objects.create(
                 application=application,
-                course=course,
-                lesson_times=times.filter(weekday__course=course)
+                course=course
             )
+            booking.lesson_times.set(times.filter(weekday__course=course))
         return application
 
 
