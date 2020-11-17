@@ -5,7 +5,7 @@ from .models import BookingApplication, PartnershipApplication, CourseBooking
 
 
 class BookingApplicationCreateSerializer(serializers.ModelSerializer):
-    lesson_times = serializers.ListField(child=serializers.IntegerField())
+    lesson_times = serializers.ListField(child=serializers.IntegerField(), write_only=True)
 
     class Meta:
         model = BookingApplication
