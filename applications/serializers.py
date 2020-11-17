@@ -30,7 +30,7 @@ class BookingApplicationCreateSerializer(serializers.ModelSerializer):
             CourseBooking.objects.create(
                 application=application,
                 course=course,
-                lesson_times=times.filter(course=course)
+                lesson_times=times.filter(weekday__course=course)
             )
         return application
 
