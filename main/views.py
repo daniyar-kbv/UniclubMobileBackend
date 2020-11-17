@@ -38,7 +38,7 @@ class CourseViewSet(GenericViewSet,
                 administrative_division__id=self.request.query_params.get('administrative_division')
             )
         if self.request.query_params.get('grade_group'):
-            queryset = queryset.filter(grade_group__id=self.request.query_params.get('grade_type'))
+            queryset = queryset.filter(grade_group__id=self.request.query_params.get('grade_group'))
         if self.request.query_params.get('grade_type'):
             queryset = queryset.filter(grade_type__id=self.request.query_params.get('grade_type'))
         if self.request.query_params.get('time'):
