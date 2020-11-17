@@ -45,11 +45,11 @@ class CourseBooking(models.Model):
         verbose_name='Время занятий',
         related_name='course_bookings'
     )
-    booking_application = models.ForeignKey(
+    booking_application = models.OneToOneField(
         BookingApplication,
         on_delete=models.CASCADE,
         verbose_name='Заявка на бронирование',
-        related_name='course_bookings'
+        related_name='course_booking'
     )
 
     class Meta:
