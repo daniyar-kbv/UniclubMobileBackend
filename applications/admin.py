@@ -1,3 +1,12 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import PartnershipApplication, BookingApplication
+
+@admin.register(PartnershipApplication)
+class PartnershipApplication(admin.ModelAdmin):
+    pass
+
+
+@admin.register(BookingApplication)
+class BookingApplication(admin.ModelAdmin):
+    pass
