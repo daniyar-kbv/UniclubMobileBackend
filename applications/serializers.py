@@ -28,7 +28,7 @@ class BookingApplicationCreateSerializer(serializers.ModelSerializer):
                 courses.append(time.weekday.course)
         for course in courses:
             booking = CourseBooking.objects.create(
-                application=application,
+                booking_application=application,
                 course=course
             )
             booking.lesson_times.set(times.filter(weekday__course=course))
