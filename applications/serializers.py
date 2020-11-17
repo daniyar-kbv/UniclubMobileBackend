@@ -25,7 +25,7 @@ class BookingApplicationCreateSerializer(serializers.ModelSerializer):
                     'lesson_times': 'Время занятия не найдено'
                 })
             if time.weekday.course not in courses:
-                courses.append(time.course)
+                courses.append(time.weekday.course)
         for course in courses:
             CourseBooking.objects.create(
                 application=application,
