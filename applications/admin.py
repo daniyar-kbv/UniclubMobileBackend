@@ -12,6 +12,7 @@ class PartnershipApplication(admin.ModelAdmin):
 class CourseBookingInline(admin.StackedInline):
     model = CourseBooking
     raw_id_fields = ['course']
+    filter_horizontal = ['lesson_times']
     extra = 0
 
     def get_queryset(self, request):
