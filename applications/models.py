@@ -3,9 +3,10 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 from main.models import LessonTime, Course
+from other.models import TimestampModel
 
 
-class PartnershipApplication(models.Model):
+class PartnershipApplication(TimestampModel):
     class Meta:
         verbose_name = "Заявки на партнерство"
         verbose_name_plural = "Заявки на партнерство"
@@ -19,7 +20,7 @@ class PartnershipApplication(models.Model):
         return f"{self.name}({self.company_name})"
 
 
-class BookingApplication(models.Model):
+class BookingApplication(TimestampModel):
     first_name = models.CharField('Имя', max_length=100)
     last_name = models.CharField('Фамилия', max_length=100)
     phone_number = PhoneNumberField('Номер телефона')
@@ -33,7 +34,7 @@ class BookingApplication(models.Model):
         return f'({self.id}) {self.first_name} {self.last_name}'
 
 
-class CourseBooking(models.Model):
+class CourseBooking(TimestampModel):
     course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
@@ -45,7 +46,7 @@ class CourseBooking(models.Model):
         verbose_name='Время занятий',
         related_name='course_bookings'
     )
-    booking_application = models.OneToOneField(
+    booking_application = models.ForeignKey(
         BookingApplication,
         on_delete=models.CASCADE,
         verbose_name='Заявка на бронирование',

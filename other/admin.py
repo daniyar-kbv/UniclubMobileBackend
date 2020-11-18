@@ -10,12 +10,12 @@ class AgeGroupAdmin(admin.ModelAdmin):
 
 @admin.register(AttendanceType)
 class AttendanceTypeAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['name']
 
 
 @admin.register(AdministrativeDivision)
 class AdministrativeDivisionAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['name']
 
 
 class GradeTypeInline(admin.TabularInline):
@@ -26,3 +26,15 @@ class GradeTypeInline(admin.TabularInline):
 @admin.register(GradeTypeGroup)
 class GradeTypeGroupAdmin(admin.ModelAdmin):
     inlines = [GradeTypeInline]
+    search_fields = ['name']
+
+
+@admin.register(GradeType)
+class GradeTypeAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}

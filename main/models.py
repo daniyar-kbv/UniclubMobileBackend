@@ -1,18 +1,27 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from PIL import Image, ExifTags
 
-from other.models import AgeGroup, AttendanceType, AdministrativeDivision, GradeTypeGroup, GradeType
+from other.models import AgeGroup, AttendanceType, AdministrativeDivision, GradeTypeGroup, GradeType, TimestampModel
 from utils import general
 
 import constants
 
 
-class Course(models.Model):
+class Course(TimestampModel):
     name = models.CharField('Название', max_length=500)
     description = models.TextField('Описание')
     from_age = models.PositiveSmallIntegerField('Возраст от', null=True)
     to_age = models.PositiveSmallIntegerField('Возраст до', null=True)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        related_name='courses',
+        null=True
+    )
     attendance_type = models.ForeignKey(
         AttendanceType,
         on_delete=models.SET_NULL,
@@ -49,8 +58,12 @@ class Course(models.Model):
     def __str__(self):
         return f'({self.id}) {self.name}'
 
+    def clean(self):
+        if self.from_age >= self.to_age:
+            raise ValidationError("Возраст от должен быть меньше возраста до")
 
-class CourseImage(models.Model):
+
+class CourseImage(TimestampModel):
     course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
@@ -103,7 +116,7 @@ class CourseImage(models.Model):
             image.save(self.image.path, quality=50, optimize=True)
 
 
-class WeekDay(models.Model):
+class WeekDay(TimestampModel):
     day = models.PositiveSmallIntegerField(
         verbose_name="День недели",
         choices=constants.WEEKDAYS
@@ -124,7 +137,7 @@ class WeekDay(models.Model):
         return f'({self.id}) {general.get_value_from_choices(constants.WEEKDAYS, self.day)}'
 
 
-class LessonTime(models.Model):
+class LessonTime(TimestampModel):
     weekday = models.ForeignKey(
         WeekDay,
         on_delete=models.CASCADE,
@@ -141,3 +154,7 @@ class LessonTime(models.Model):
 
     def __str__(self):
         return f'({self.id}) {self.from_time}-{self.to_time}'
+
+    def clean(self):
+        if self.from_time >= self.to_time:
+            raise ValidationError('Время начала должно быть раньше чем время конца')

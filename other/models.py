@@ -1,7 +1,15 @@
 from django.db import models
 
 
-class GradeTypeGroup(models.Model):
+class TimestampModel(models.Model):
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField('Дата обновления', auto_now=True, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class GradeTypeGroup(TimestampModel):
     name = models.CharField('Название', max_length=100)
 
     class Meta:
@@ -12,7 +20,7 @@ class GradeTypeGroup(models.Model):
         return f'({self.id}) {self.name}'
 
 
-class GradeType(models.Model):
+class GradeType(TimestampModel):
     class Meta:
         verbose_name = "Вид занятия"
         verbose_name_plural = "Виды занятий"
@@ -30,7 +38,7 @@ class GradeType(models.Model):
         return f'({self.id}) {self.name}'
 
 
-class AdministrativeDivision(models.Model):
+class AdministrativeDivision(TimestampModel):
     class Meta:
         verbose_name = 'Административное деление'
         verbose_name_plural = 'Административные деления'
@@ -41,7 +49,7 @@ class AdministrativeDivision(models.Model):
         return f'({self.id}) {self.name}'
 
 
-class AgeGroup(models.Model):
+class AgeGroup(TimestampModel):
     from_age = models.PositiveSmallIntegerField('От')
     to_age = models.PositiveSmallIntegerField('До')
 
@@ -54,7 +62,7 @@ class AgeGroup(models.Model):
         return f'({self.id}) {self.from_age} - {self.to_age}'
 
 
-class AttendanceType(models.Model):
+class AttendanceType(TimestampModel):
     name = models.CharField('Название', max_length=100)
 
     class Meta:
