@@ -54,6 +54,7 @@ class Course(TimestampModel):
     class Meta:
         verbose_name = 'Занятие'
         verbose_name_plural = 'Занятия'
+        ordering = ['-created_at']
 
     def __str__(self):
         return f'({self.id}) {self.name}'

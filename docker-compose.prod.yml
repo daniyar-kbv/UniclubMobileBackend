@@ -8,6 +8,8 @@ services:
       - ./.env.dev.db
     ports:
       - "5433:5432"
+    logging:
+      driver: none
   web:
     build: .
     command: sh -c "/wait &&

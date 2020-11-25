@@ -26,6 +26,11 @@ class CourseBookingInline(admin.StackedInline):
             return ['lesson_times', 'course']
         return self.readonly_fields
 
+    # def formfield_for_manytomany(self, db_field, request, **kwargs):
+    #     if db_field.name == 'lesson_times':
+    #         kwargs["queryset"] = Car.objects.filter(owner=request.user)
+    #     return super(MyModelAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+
 
 @admin.register(BookingApplication)
 class BookingApplicationAdmin(admin.ModelAdmin):
