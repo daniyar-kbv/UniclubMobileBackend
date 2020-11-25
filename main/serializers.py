@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from rest_framework import serializers
 
 from .models import Course, LessonTime, WeekDay, CourseImage
@@ -22,12 +24,17 @@ class WeekdayListSerializer(serializers.ModelSerializer):
 
 
 class CourseListSerializer(serializers.ModelSerializer):
-    weekdays = WeekdayListSerializer(many=True)
+    weekdays = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
         fields = ['id', 'name', 'description', 'images', 'weekdays']
+
+    def get_weekdays(self, obj):
+        weekdays = obj.weekdays.annotate(num_times=Count('lesson_times')).filter(num_times__gt=0)
+        serializer = WeekdayListSerializer(weekdays, many=True)
+        return serializer.data
 
     def get_images(self, obj):
         images = CourseImage.objects.filter(course=obj)
