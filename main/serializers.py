@@ -32,7 +32,7 @@ class CourseListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'images', 'weekdays']
 
     def get_weekdays(self, obj):
-        weekdays = obj.weekdays.annotate(num_times=Count('lesson_times')).filter(num_times__gt=0)
+        weekdays = obj.weekdays.annotate(num_times=Count('lesson_times')).filter(num_times__gt=0).order_by('day')
         serializer = WeekdayListSerializer(weekdays, many=True)
         return serializer.data
 
