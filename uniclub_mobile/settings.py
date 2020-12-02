@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 '''
 
 from pathlib import Path
+from utils import telegram_bot
+# from main.tasks import bot
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'main',
     'other',
     'applications',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -157,3 +160,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5
 }
+
+CELERY_BROKER_URL = os.environ.get('BROKER_URL', 'amqp://localhost')
+CELERY_IGNORE_RESULT = False
+CELERY_RESULT_BACKEND = 'amqp'

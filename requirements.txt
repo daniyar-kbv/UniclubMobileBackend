@@ -34,6 +34,7 @@ prompt-toolkit==3.0.8
 psycopg2-binary==2.8.6
 psycopg2-pool==1.1
 pyparsing==2.4.7
+pyTelegramBotAPI==3.7.4
 python-dateutil==2.8.1
 pytz==2020.4
 requests==2.24.0

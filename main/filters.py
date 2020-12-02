@@ -6,34 +6,34 @@ class CoursesMobileFilterBackend(BaseFilterBackend):
     def get_schema_fields(self, view):
         return [
             coreapi.Field(
-                name='age_group',
+                name='age_groups',
                 location='query',
                 required=False,
-                schema=coreschema.Integer()
+                schema=coreschema.Array()
             ),
             coreapi.Field(
-                name='attendance_type',
+                name='attendance_types',
                 location='query',
                 required=False,
-                schema=coreschema.Integer()
+                schema=coreschema.Array()
             ),
             coreapi.Field(
-                name='grade_group',
+                name='grade_groups',
                 location='query',
                 required=False,
-                schema=coreschema.Integer()
+                schema=coreschema.Array()
             ),
             coreapi.Field(
-                name='grade_type',
+                name='grade_types',
                 location='query',
                 required=False,
-                schema=coreschema.Integer()
+                schema=coreschema.Array()
             ),
             coreapi.Field(
-                name='administrative_division',
+                name='administrative_divisions',
                 location='query',
                 required=False,
-                schema=coreschema.Integer()
+                schema=coreschema.Array()
             ),
             coreapi.Field(
                 name='time',

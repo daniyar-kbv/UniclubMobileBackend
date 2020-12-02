@@ -23,24 +23,25 @@ class CourseViewSet(GenericViewSet,
     pagination_class = pagination.CustomPagination
 
     def filter_queryset(self, queryset):
-        if self.request.query_params.get('age_group'):
-            try:
-                age_group = AgeGroup.objects.get(id=self.request.query_params.get('age_group'))
-                queryset = queryset.filter(
-                    Q(from_age__lte=age_group.to_age) | Q(to_age__gte=age_group.from_age)
-                )
-            except:
-                pass
-        if self.request.query_params.get('attendance_type'):
-            queryset = queryset.filter(attendance_type=self.request.query_params.get('attendance_type'))
-        if self.request.query_params.get('administrative_division'):
+        if self.request.query_params.get('age_groups[]'):
+            for age_group_id in self.request.query_params.get('age_groups[]'):
+                try:
+                    age_group = AgeGroup.objects.get(id=age_group_id)
+                    queryset = queryset.union(queryset.filter(
+                        Q(from_age__lte=age_group.to_age) | Q(to_age__gte=age_group.from_age)
+                    ))
+                except:
+                    pass
+        if self.request.query_params.get('attendance_types[]'):
+            queryset = queryset.filter(attendance_type_id__in=self.request.query_params.get('attendance_types[]').split(', '))
+        if self.request.query_params.get('administrative_divisions[]'):
             queryset = queryset.filter(
-                administrative_division__id=self.request.query_params.get('administrative_division')
+                administrative_division_id__in=self.request.query_params.get('administrative_divisions[]').split(', ')
             )
-        if self.request.query_params.get('grade_group'):
-            queryset = queryset.filter(grade_group__id=self.request.query_params.get('grade_group'))
-        if self.request.query_params.get('grade_type'):
-            queryset = queryset.filter(grade_type__id=self.request.query_params.get('grade_type'))
+        if self.request.query_params.get('grade_groups[]'):
+            queryset = queryset.filter(grade_group_id__in=self.request.query_params.get('grade_groups[]').split(', '))
+        if self.request.query_params.get('grade_types[]'):
+            queryset = queryset.filter(grade_type_id__in=self.request.query_params.get('grade_types[]').split(', '))
         if self.request.query_params.get('time'):
             if self.request.query_params.get('time') == constants.TIME_BEFORE_LUNCH:
                 queryset = queryset.filter(weekdays__lesson_times__from_time__lte=datetime.time(hour=12, minute=0, second=0))

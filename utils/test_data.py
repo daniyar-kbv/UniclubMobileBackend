@@ -1,11 +1,13 @@
 from django.conf import settings
 from django.core.files import File
+from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from faker import Faker
 from PIL import Image
 
-from main.models import Course, CourseImage, LessonTime, WeekDay
+from main.models import Course, CourseImage, LessonTime, WeekDay, AgeGroup, AdministrativeDivision, AttendanceType, \
+    GradeType, GradeTypeGroup
 
 import random, os, datetime, constants
 
@@ -57,18 +59,19 @@ def create_courses(count=1):
 
     for i in range(count):
 
-        group = random.randint(1, 2)
-        type_ = random.randint(1, 2) if group == 1 else random.randint(3, 4)
+        group = random.choice(list(map(lambda item: item.id, GradeTypeGroup.objects.all())))
+        type_ = random.choice(list(map(lambda item: item.id, GradeType.objects.filter(group_id=group))))
 
         data = {
             "name": fake_lorem.sentence(nb_words=random.randint(1, 3)),
             "description": fake_lorem.paragraph(),
             "from_age": random.randint(1, 10),
             "to_age": random.randint(11, 18),
-            "attendance_type": random.randint(1, 2),
+            "attendance_type": random.choice(list(map(lambda item: item.id, AttendanceType.objects.all()))),
             "grade_group": group,
             "grade_type": type_,
-            "administrative_division": random.randint(1, 2),
+            "administrative_division": random.choice(list(map(lambda item: item.id, AdministrativeDivision.objects.all()))),
+            "user": random.choice(list(map(lambda item: item.id, User.objects.filter(is_superuser=False))))
         }
 
         serializer = CourseCreateSerializer(data=data)
