@@ -1,6 +1,7 @@
 from django.db.models import Q
 
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.views import APIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -12,8 +13,9 @@ from .serializers import CourseListSerializer
 from .filters import CoursesMobileFilterBackend
 from other.models import AgeGroup
 from utils import pagination, test_data
+from utils.telegrambot import bot
 
-import constants, datetime
+import constants, datetime, telebot
 
 
 class CourseViewSet(GenericViewSet,
@@ -64,3 +66,11 @@ class CourseViewSet(GenericViewSet,
         if self.action == 'list':
             return CourseListSerializer
         return CourseListSerializer
+
+
+class TelegramBotView(APIView):
+    def post(self, request, format=None):
+        json_string = request.body.decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return Response()
