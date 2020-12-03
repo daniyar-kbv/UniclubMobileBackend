@@ -30,10 +30,11 @@ def get_text_messages(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
-
     action = call.data.split()[0]
     course_id = int(call.data.split()[1])
+    print('1')
     user = authorize_user(call.data.split()[2])
+    print('(')
     try:
         course = Course.objects.get(id=course_id)
     except:
@@ -121,11 +122,15 @@ def extract_course_id(text):
 
 
 def authorize_user(telegram_user):
+    print('2')
     id = int(telegram_user)
+    print('3')
     if TelegramUser.objects.filter(telegram_id=id).exists():
+        print('4')
         user = TelegramUser.objects.get(telegram_id=id)
         return user
     else:
+        print('5')
         user = TelegramUser.objects.create(
             telegram_id=id,
             username=telegram_user.username,
