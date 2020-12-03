@@ -166,12 +166,6 @@ class TelegramUser(TimestampModel):
     username = models.CharField(max_length=100, null=True, blank=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
-    last_course = models.ForeignKey(
-        Course,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
 
 
 class CourseReview(TimestampModel):
@@ -190,3 +184,6 @@ class CourseReview(TimestampModel):
         on_delete=models.CASCADE
     )
     text = models.TextField('Текст')
+
+    class Meta:
+        ordering = ['-created_at']
