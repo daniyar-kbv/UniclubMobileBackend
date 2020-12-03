@@ -11,16 +11,16 @@ bot.set_webhook(url=constants.TELEGRAM_BOT_URL)
 
 @bot.message_handler(commands=['start'])
 def handle_start(message):
-    markup = types.InlineKeyboardMarkup()
-    key_view = types.InlineKeyboardButton(
-        text='Просмотреть отзывы',
-        callback_data='asd'
-    )
-    markup.add(key_view)
-    text = ')'
-    bot.send_message(message.from_user.id, text, reply_markup=markup)
-    # course_id = extract_course_id(message.text)
-    # main_menu(course_id, message.from_user.id)
+    # markup = types.InlineKeyboardMarkup()
+    # key_view = types.InlineKeyboardButton(
+    #     text='Просмотреть отзывы',
+    #     callback_data='asd'
+    # )
+    # markup.add(key_view)
+    # text = ')'
+    # bot.send_message(message.from_user.id, text, reply_markup=markup)
+    course_id = extract_course_id(message.text)
+    main_menu(course_id, message.from_user.id)
 
 
 @bot.message_handler(content_types=['text'])
@@ -30,9 +30,10 @@ def get_text_messages(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
-    print(type(call.data))
+    print(call.data)
     action = call.data.split()[0]
-    print('asd')
+    print(action)
+    print(call.data.split()[1])
     course_id = int(call.data.split()[1])
     print('asd')
     user = authorize_user(call.data.split()[2])
