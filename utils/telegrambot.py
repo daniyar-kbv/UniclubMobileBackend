@@ -30,8 +30,9 @@ def get_text_messages(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
-    print(call.data)
+    print(type(call.data))
     action = call.data.split()[0]
+    print('asd')
     course_id = int(call.data.split()[1])
     print('asd')
     user = authorize_user(call.data.split()[2])
