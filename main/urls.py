@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register('courses', CourseViewSet)
 
 urlpatterns = [
+    path('bot/', include('django_telegrambot.urls')),
 ]
 
 urlpatterns += router.urls
