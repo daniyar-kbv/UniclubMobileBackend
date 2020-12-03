@@ -137,6 +137,7 @@ def authorize_user(telegram_user):
             first_name=telegram_user.first_name,
             last_name=telegram_user.last_name
         )
+        print('6')
         return user
 
 
