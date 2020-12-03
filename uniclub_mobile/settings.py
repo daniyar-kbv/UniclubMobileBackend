@@ -170,7 +170,6 @@ DJANGO_TELEGRAMBOT = {
     'MODE': 'WEBHOOK',
 
     'WEBHOOK_SITE': 'https://server.uniclub.kz',
-    'WEBHOOK_PREFIX': '',
 
     'BOTS': [
         {
