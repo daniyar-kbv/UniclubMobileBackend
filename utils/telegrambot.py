@@ -13,10 +13,7 @@ bot.set_webhook(url=constants.TELEGRAM_BOT_URL)
 def handle_start(message):
     print('asd')
     keyboard = types.InlineKeyboardMarkup()
-    key_more = types.InlineKeyboardButton(text='Посмотреть еще', callback_data={
-        'user': 1,
-        'asd': 3
-    })
+    key_more = types.InlineKeyboardButton(text='Посмотреть еще', callback_data='asd')
     keyboard.add(key_more)
     bot.send_message(message.from_user.id, ')', reply_markup=keyboard)
     # course_id = extract_course_id(message.text)
