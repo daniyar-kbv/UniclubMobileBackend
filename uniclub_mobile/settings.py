@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 '''
 
 from pathlib import Path
-from utils import telegram_bot
-# from main.tasks import bot
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
