@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'nested_inline',
+    'django_telegrambot',
 
     'main',
     'other',
@@ -164,3 +165,17 @@ REST_FRAMEWORK = {
 CELERY_BROKER_URL = os.environ.get('BROKER_URL', 'amqp://localhost')
 CELERY_IGNORE_RESULT = False
 CELERY_RESULT_BACKEND = 'amqp'
+
+DJANGO_TELEGRAMBOT = {
+    'MODE': 'WEBHOOK',
+
+    'WEBHOOK_SITE': 'https://server.uniclub.kz',
+    'WEBHOOK_PREFIX': '/telegrambot',
+
+    'BOTS': [
+        {
+           'TOKEN': os.environ.get('TELEGRAM_BOT_TOKEN'),
+        },
+    ],
+
+}
