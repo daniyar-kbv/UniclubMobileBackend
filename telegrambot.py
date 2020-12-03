@@ -15,10 +15,12 @@ def start(bot, update):
 
 
 def echo(bot, update):
+    print(update.message)
     bot.sendMessage(update.message.chat_id, text=update.message.text)
 
 
 def error(bot, update, error):
+    print(error)
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 
