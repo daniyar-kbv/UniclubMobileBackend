@@ -33,6 +33,7 @@ def callback_worker(call):
     print(call.data)
     action = call.data.split()[0]
     course_id = int(call.data.split()[1])
+    print('asd')
     user = authorize_user(call.data.split()[2])
     print(action)
     print(course_id)
