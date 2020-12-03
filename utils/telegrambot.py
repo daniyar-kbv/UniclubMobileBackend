@@ -12,6 +12,7 @@ bot.set_webhook(url=constants.TELEGRAM_BOT_URL)
 @bot.message_handler(commands=['start'])
 def handle_start(message):
     course_id = extract_course_id(message.text)
+    print(course_id)
     main_menu(course_id, message.from_user.id)
 
 
