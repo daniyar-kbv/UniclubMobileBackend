@@ -44,7 +44,7 @@ def callback_worker(call):
     if action == constants.TELEGRAM_ACTION_VIEW_REVIEWS:
         from_ = int(call.data.split()[3]) if len(call.data.split()) > 3 else 0
         to_ = int(call.data.split()[4]) if len(call.data.split()) > 4 else 0
-        reviews = course.reviews.all()[from_:to_]
+        reviews = CourseReview.objects.filter(course=course)[from_:to_]
         if reviews.count() > 0:
             for index, review in enumerate(reviews):
                 if index != 9 or reviews[from_ + 10:to_ + 10].count == 0:
