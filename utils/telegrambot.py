@@ -91,7 +91,7 @@ def main_menu(course_id, user_id):
         markup = types.InlineKeyboardMarkup()
         key_view = types.InlineKeyboardButton(
             text='Просмотреть отзывы',
-            callback_data=f'{constants.TELEGRAM_ACTION_VIEW_REVIEWS} {course_id} {user_id}'
+            callback_data=f'{constants.TELEGRAM_ACTION_VIEW_REVIEWS}:{course_id}:{user_id}'
         )
         key_leave = types.InlineKeyboardButton(
             text='Оставить отзыв',
