@@ -25,6 +25,9 @@ def callback_worker(call):
     action = call.data.split()[0]
     course_id = int(call.data.split()[1])
     user = authorize_user(call.data.split()[2])
+    print(action)
+    print(course_id)
+    print(user)
     try:
         course = Course.objects.get(id=course_id)
     except:
