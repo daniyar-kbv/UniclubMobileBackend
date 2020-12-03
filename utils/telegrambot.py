@@ -88,26 +88,23 @@ def leave_review(message, course_id):
 
 def main_menu(course_id, user_id):
     if course_id:
-        try:
+        if Course.objects.filter(id=course_id).exists():
             course = Course.objects.get(id=course_id)
-        except:
-            bot.send_message(user_id, 'Занятие не найдено')
-            return
-        markup = types.InlineKeyboardMarkup()
-        key_view = types.InlineKeyboardButton(
-            text='Просмотреть отзывы',
-            callback_data=f'{constants.TELEGRAM_ACTION_VIEW_REVIEWS} {course_id} {user_id}'
-        )
-        key_leave = types.InlineKeyboardButton(
-            text='Оставить отзыв',
-            callback_data=f'{constants.TELEGRAM_ACTION_LEAVE_REVIEW} {course_id} {user_id}'
-        )
-        markup.add(key_view)
-        markup.add(key_leave)
-        text = f"""Занятие: {course.name}
-        
+            markup = types.InlineKeyboardMarkup()
+            key_view = types.InlineKeyboardButton(
+                text='Просмотреть отзывы',
+                callback_data=f'{constants.TELEGRAM_ACTION_VIEW_REVIEWS} {course_id} {user_id}'
+            )
+            key_leave = types.InlineKeyboardButton(
+                text='Оставить отзыв',
+                callback_data=f'{constants.TELEGRAM_ACTION_LEAVE_REVIEW} {course_id} {user_id}'
+            )
+            markup.add(key_view)
+            markup.add(key_leave)
+            text = f"""Занятие: {course.name}
+            
 Выберите действие"""
-        bot.send_message(user_id, text, reply_markup=markup)
+            bot.send_message(user_id, text, reply_markup=markup)
     else:
         bot.send_message(user_id, 'Занятие не найдено')
 
@@ -125,19 +122,16 @@ def extract_course_id(text):
 
 def authorize_user(telegram_user):
     id = int(telegram_user)
-    print('zxc')
-    try:
+    if TelegramUser.objects.filter(telegram_id=id).exists():
         user = TelegramUser.objects.get(telegram_id=id)
-        print('asd')
         return user
-    except:
+    else:
         user = TelegramUser.objects.create(
             telegram_id=id,
             username=telegram_user.username,
             first_name=telegram_user.first_name,
             last_name=telegram_user.last_name
         )
-        print('qwe')
         return user
 
 
