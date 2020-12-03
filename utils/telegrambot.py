@@ -90,7 +90,7 @@ def leave_review(message, course_id):
 
 def main_menu(course_id, user_id):
     if course_id:
-        if Course.objects.filter(id=course_id).exists():
+        try:
             course = Course.objects.get(id=course_id)
             markup = types.InlineKeyboardMarkup()
             key_view = types.InlineKeyboardButton(
@@ -107,6 +107,8 @@ def main_menu(course_id, user_id):
             
 Выберите действие"""
             bot.send_message(user_id, text, reply_markup=markup)
+        except:
+            bot.send_message(user_id, 'Занятие не найдено')
     else:
         bot.send_message(user_id, 'Занятие не найдено')
 
@@ -130,12 +132,14 @@ def register_user(telegram_user):
         last_name=telegram_user.last_name
     )
 
+
 def authorize_user(user_id):
     try:
         user = TelegramUser.objects.get(telegram_id=user_id)
         return user
     except:
         bot.send_message(user_id, 'Занятие не найдено')
+
 
 def serialize_review(review):
     if review.user.first_name and review.user.username:
