@@ -173,6 +173,8 @@ DJANGO_TELEGRAMBOT = {
     'BOTS': [
         {
            'TOKEN': os.environ.get('TELEGRAM_BOT_TOKEN'),
+
+            'ALLOWED_UPDATES':  [],
         },
     ],
 
