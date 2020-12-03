@@ -40,6 +40,7 @@ def callback_worker(call):
     print(action)
     print(course_id)
     print(user)
+
     try:
         course = Course.objects.get(id=course_id)
     except:
