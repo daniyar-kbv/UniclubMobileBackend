@@ -19,6 +19,7 @@ def handle_start(message):
     # markup.add(key_view)
     # text = ')'
     # bot.send_message(message.from_user.id, text, reply_markup=markup)
+    register_user(message.from_user)
     course_id = extract_course_id(message.text)
     main_menu(course_id, message.from_user.id)
 
@@ -121,25 +122,20 @@ def extract_course_id(text):
     return None
 
 
-def authorize_user(telegram_user):
-    print('2')
-    id = int(telegram_user)
-    print('3')
-    if TelegramUser.objects.filter(telegram_id=id).exists():
-        print('4')
-        user = TelegramUser.objects.get(telegram_id=id)
-        return user
-    else:
-        print('5')
-        user = TelegramUser.objects.create(
-            telegram_id=id,
-            username=telegram_user.username,
-            first_name=telegram_user.first_name,
-            last_name=telegram_user.last_name
-        )
-        print('6')
-        return user
+def register_user(telegram_user):
+    TelegramUser.objects.create(
+        telegram_id=telegram_user.id,
+        username=telegram_user.username,
+        first_name=telegram_user.first_name,
+        last_name=telegram_user.last_name
+    )
 
+def authorize_user(user_id):
+    try:
+        user = TelegramUser.objects.get(telegram_id=user_id)
+        return user
+    except:
+        bot.send_message(user_id, 'Занятие не найдено')
 
 def serialize_review(review):
     if review.user.first_name and review.user.username:
