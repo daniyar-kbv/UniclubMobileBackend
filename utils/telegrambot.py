@@ -81,6 +81,7 @@ def leave_review(message, course_id):
 
 
 def main_menu(course_id, user_id):
+    print(f'{constants.TELEGRAM_ACTION_VIEW_REVIEWS} {course_id} {user_id}')
     if course_id:
         try:
             course = Course.objects.get(id=course_id)
@@ -99,6 +100,7 @@ def main_menu(course_id, user_id):
         markup.add(key_view)
         markup.add(key_leave)
         text = f"""Занятие: {course.name}
+        
 Выберите действие"""
         bot.send_message(user_id, text, reply_markup=markup)
     else:
