@@ -159,3 +159,34 @@ class LessonTime(TimestampModel):
     def clean(self):
         if self.from_time >= self.to_time:
             raise ValidationError('Время начала должно быть раньше чем время конца')
+
+
+class TelegramUser(TimestampModel):
+    telegram_id = models.IntegerField()
+    username = models.CharField(max_length=100, null=True, blank=True)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    last_course = models.ForeignKey(
+        Course,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+
+class CourseReview(TimestampModel):
+    user = models.ForeignKey(
+        TelegramUser,
+        verbose_name='Пользователь телеграма',
+        related_name='reviews',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+    course = models.ForeignKey(
+        Course,
+        verbose_name='Занятие',
+        related_name='reviews',
+        on_delete=models.CASCADE
+    )
+    text = models.TextField('Текст')

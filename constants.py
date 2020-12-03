@@ -32,3 +32,4 @@ TIMES = [
 
 TELEGRAM_BOT_TOKEN = '1423817155:AAEz2djQyKkFeqDxGzsWBMUDbwSIYJdcxlQ'
 TELEGRAM_BOT_URL = f'https://server.uniclub.kz/main/bot/'
+TELEGRAM_DATETIME_FORMAT = '%d %B, %Y'
