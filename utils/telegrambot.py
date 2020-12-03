@@ -125,7 +125,7 @@ def extract_course_id(text):
 
 def authorize_user(telegram_user):
     id = int(telegram_user)
-    print('asd')
+    print('zxc')
     try:
         user = TelegramUser.objects.get(telegram_id=id)
         print('asd')
@@ -137,7 +137,7 @@ def authorize_user(telegram_user):
             first_name=telegram_user.first_name,
             last_name=telegram_user.last_name
         )
-        print('asd')
+        print('qwe')
         return user
 
 
