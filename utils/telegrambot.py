@@ -11,7 +11,6 @@ bot.set_webhook(url=constants.TELEGRAM_BOT_URL)
 
 @bot.message_handler(commands=['start'])
 def handle_start(message):
-    print('asd')
     keyboard = types.InlineKeyboardMarkup()
     key_more = types.InlineKeyboardButton(text='Посмотреть еще', callback_data='asd')
     keyboard.add(key_more)
@@ -51,6 +50,7 @@ def get_text_messages(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
+    print('qwe')
     print(call.data)
 
 
