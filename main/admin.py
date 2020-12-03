@@ -2,9 +2,14 @@ from django.contrib import admin
 from django import forms
 from nested_inline.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
-from .models import Course, WeekDay, LessonTime, CourseImage
+from .models import Course, WeekDay, LessonTime, CourseImage, CourseReview
 from other.models import GradeType, GradeTypeGroup
 import operator
+
+
+class CourseReviewInline(NestedTabularInline):
+    model = CourseReview
+    extra = 0
 
 
 class LessonTimeInline(NestedTabularInline):
@@ -35,7 +40,7 @@ def tagform_factory(group):
 @admin.register(Course)
 class CourseAdmin(NestedModelAdmin):
     list_display = ['id', 'name', 'created_at']
-    inlines = [CourseImageInline, WeekdayInline]
+    inlines = [CourseImageInline, WeekdayInline, CourseReviewInline]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
