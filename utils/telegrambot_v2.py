@@ -17,6 +17,7 @@ def handle_start(message):
 
 
 def main_menu(course_id, user_id):
+    print(course_id)
     if course_id:
         try:
             course = Course.objects.get(id=course_id)
@@ -35,7 +36,6 @@ def main_menu(course_id, user_id):
 
 
 def handle_review(message, course_id, from_=None, to_=None):
-    print(course_id)
     user = authorize_user(message.from_user.id)
     if validate_text(
             message.text,
