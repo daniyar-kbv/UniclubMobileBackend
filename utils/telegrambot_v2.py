@@ -21,6 +21,7 @@ def main_menu(course_id, user_id):
         try:
             course = Course.objects.get(id=course_id)
         except:
+            print('asd')
             bot.send_message(user_id, 'Занятие не найдено')
             return
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
