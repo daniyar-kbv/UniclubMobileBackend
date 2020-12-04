@@ -17,20 +17,20 @@ def handle_start(message):
 
 
 def main_menu(course_id, user_id):
-    print(course_id)
     if course_id:
         try:
             course = Course.objects.get(id=course_id)
-            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            markup.add(constants.TELEGRAM_VIEW_REVIEWS)
-            markup.add(constants.TELEGRAM_LEAVE_REVIEW)
-            text = f"""Занятие: {course.name}
-
-Выберите действие"""
-            message = bot.send_message(user_id, text, reply_markup=markup)
-            bot.register_next_step_handler(message, handle_review, course_id)
         except:
             bot.send_message(user_id, 'Занятие не найдено')
+            return
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.add(constants.TELEGRAM_VIEW_REVIEWS)
+        markup.add(constants.TELEGRAM_LEAVE_REVIEW)
+        text = f"""Занятие: {course.name}
+
+Выберите действие"""
+        message = bot.send_message(user_id, text, reply_markup=markup)
+        bot.register_next_step_handler(message, handle_review, course_id)
     else:
         bot.send_message(user_id, 'Занятие не найдено')
 
