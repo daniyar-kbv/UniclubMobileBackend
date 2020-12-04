@@ -184,6 +184,10 @@ class CourseReview(TimestampModel):
         on_delete=models.CASCADE
     )
     text = models.TextField('Текст')
+    is_anonymous = models.BooleanField(
+        'Анонимно',
+        default=False
+    )
 
     class Meta:
         ordering = ['-created_at']
