@@ -21,7 +21,6 @@ def main_menu(course_id, user_id):
         try:
             course = Course.objects.get(id=course_id)
         except:
-            print('asd')
             bot.send_message(user_id, 'Занятие не найдено')
             return
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -48,7 +47,7 @@ def handle_review(message, course_id, from_=None, to_=None):
             ]
     ):
         if message.text in [constants.TELEGRAM_VIEW_REVIEWS, constants.TELEGRAM_MORE_REVIEWS]:
-            hanle_view_reviews(message, course_id, user, user, from_, to_)
+            hanle_view_reviews(message, course_id, user, from_, to_)
         elif message.text == constants.TELEGRAM_LEAVE_REVIEW:
             message = bot.send_message(user.telegram_id, 'Напишите ваш отзыв')
             bot.register_next_step_handler(message, ask_anonymous, course_id)
@@ -59,6 +58,7 @@ def handle_review(message, course_id, from_=None, to_=None):
 
 
 def hanle_view_reviews(message, course_id, user, from_, to_):
+    print(course_id)
     try:
         course = Course.objects.get(id=course_id)
     except:
