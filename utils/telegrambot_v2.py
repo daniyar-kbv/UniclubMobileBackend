@@ -1,5 +1,7 @@
+from __future__ import absolute_import, unicode_literals
 from django.template.defaultfilters import date as _date
-
+from uniclub_mobile.celery import app
+from celery import shared_task
 from main.models import TelegramUser, Course, CourseReview
 
 from telebot import types
@@ -7,6 +9,12 @@ import telebot, constants, datetime
 
 bot = telebot.TeleBot(constants.TELEGRAM_BOT_TOKEN)
 bot.set_webhook(url=constants.TELEGRAM_BOT_URL)
+# bot.delete_webhook()
+
+
+# @shared_task
+# def start_bot():
+#     bot.polling()
 
 
 @bot.message_handler(commands=['start'])
@@ -23,82 +31,94 @@ def main_menu(course_id, user_id):
         except:
             bot.send_message(user_id, 'Занятие не найдено')
             return
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        markup.add(constants.TELEGRAM_VIEW_REVIEWS)
-        markup.add(constants.TELEGRAM_LEAVE_REVIEW)
         text = f"""Занятие: {course.name}
 
 Выберите действие"""
-        message = bot.send_message(user_id, text, reply_markup=markup)
+        message = bot.send_message(user_id, text, reply_markup=get_main_markup())
+        bot.clear_step_handler(message)
         bot.register_next_step_handler(message, handle_review, course_id)
     else:
         bot.send_message(user_id, 'Занятие не найдено')
 
 
 def handle_review(message, course_id, from_=None, to_=None):
-    user = authorize_user(message.from_user.id)
-    if validate_text(
-            message.text,
-            [
-                constants.TELEGRAM_VIEW_REVIEWS,
-                constants.TELEGRAM_LEAVE_REVIEW,
-                constants.TELEGRAM_MORE_REVIEWS,
-                constants.TELEGRAM_BACK
-            ]
-    ):
+    is_valid =  validate_text(
+        message,
+        [
+            constants.TELEGRAM_VIEW_REVIEWS,
+            constants.TELEGRAM_LEAVE_REVIEW
+        ]
+    )
+    if is_valid == True:
         if message.text in [constants.TELEGRAM_VIEW_REVIEWS, constants.TELEGRAM_MORE_REVIEWS]:
-            hanle_view_reviews(message, course_id, user, from_, to_)
+            handle_view_reviews(message, course_id, from_, to_)
         elif message.text == constants.TELEGRAM_LEAVE_REVIEW:
-            message = bot.send_message(user.telegram_id, 'Напишите ваш отзыв')
+            message = bot.send_message(message.from_user.id, 'Напишите ваш отзыв')
+            bot.clear_step_handler(message)
             bot.register_next_step_handler(message, ask_anonymous, course_id)
-        elif message.text == constants.TELEGRAM_BACK:
-            main_menu(course_id, user.telegram_id)
+    elif is_valid == False:
+        bot.clear_step_handler(message)
+        bot.register_next_step_handler(message, handle_review, course_id)
     else:
-        handle_review(message, course_id, from_, to_)
-
-
-def hanle_view_reviews(message, course_id, user, from_, to_):
-    print('1')
-    try:
-        course = Course.objects.get(id=course_id)
-    except:
-        bot.send_message(user.telegram_id, 'Занятие не найдено')
         return
-    print('2')
-    from_ = from_ if from_ else 0
-    to_ = to_ if to_ else 10
-    reviews = course.reviews.all()[from_:to_]
-    if reviews.count() > 0:
-        for index, review in enumerate(reviews):
-            keyboard = None
-            if index == reviews.count() - 1:
-                keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                if reviews[from_ + constants.TELEGRAM_PAGE_NUMBER:to_ + constants.TELEGRAM_PAGE_NUMBER].count > 0:
-                    keyboard.add(constants.TELEGRAM_MORE_REVIEWS)
-                keyboard.add(constants.TELEGRAM_BACK)
-            bot.send_message(user.telegram_id, serialize_review(review), reply_markup=keyboard)
-            bot.register_next_step_handler(
-                message,
-                handle_review,
-                course_id,
-                from_ + constants.TELEGRAM_PAGE_NUMBER,
-                to_ + constants.TELEGRAM_PAGE_NUMBER
-            )
+
+
+def handle_view_reviews(message, course_id, from_, to_):
+    is_valid = validate_text(
+        message,
+        [
+            constants.TELEGRAM_VIEW_REVIEWS,
+            constants.TELEGRAM_MORE_REVIEWS,
+            constants.TELEGRAM_BACK
+        ]
+    )
+    if is_valid == True:
+        if message.text in [constants.TELEGRAM_VIEW_REVIEWS, constants.TELEGRAM_MORE_REVIEWS]:
+            user = authorize_user(message.from_user.id)
+            try:
+                course = Course.objects.get(id=course_id)
+            except:
+                bot.send_message(user.telegram_id, 'Занятие не найдено')
+                return
+            from_ = from_ if from_ else 0
+            to_ = to_ if to_ else constants.TELEGRAM_PAGE_NUMBER
+            all_reviews = course.reviews.all()
+            reviews = all_reviews[from_:to_]
+            if len(reviews) > 0:
+                for index, review in enumerate(reviews):
+                    keyboard = None
+                    if index == len(reviews) - 1:
+                        keyboard = get_pagination_markup(len(all_reviews[from_ + constants.TELEGRAM_PAGE_NUMBER:to_ + constants.TELEGRAM_PAGE_NUMBER]) > 0)
+                    bot.send_message(user.telegram_id, serialize_review(review), reply_markup=keyboard)
+                    bot.clear_step_handler(message)
+                    bot.register_next_step_handler(
+                        message,
+                        handle_view_reviews,
+                        course_id,
+                        from_ + constants.TELEGRAM_PAGE_NUMBER,
+                        to_ + constants.TELEGRAM_PAGE_NUMBER
+                    )
+            else:
+                bot.send_message(user.telegram_id, 'К сожалению по данному занятию отсутвуют отзывы')
+                main_menu(course_id, user.telegram_id)
+        elif message.text == constants.TELEGRAM_BACK:
+            main_menu(course_id, message.from_user.id)
+    elif is_valid == False:
+        bot.clear_step_handler(message)
+        bot.register_next_step_handler(message, handle_view_reviews, course_id, from_, to_)
     else:
-        bot.send_message(user.telegram_id, 'К сожалению по данному занятию отсутвуют отзывы')
-        main_menu(course_id, user.telegram_id)
+        return
 
 
 def ask_anonymous(message, course_id):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(constants.TELEGRAM_YES)
-    markup.add(constants.TELEGRAM_NO)
-    bot.send_message('Хотите оставить отзыв анонимно?', reply_markup=markup)
+    bot.send_message(message.from_user.id, 'Хотите оставить отзыв анонимно?', reply_markup=get_yes_no_markup())
+    bot.clear_step_handler(message)
     bot.register_next_step_handler(message, finish_leave_review, course_id, message.text)
 
 
 def finish_leave_review(message, course_id, text):
-    if validate_text(message.text, [constants.TELEGRAM_YES, constants.TELEGRAM_NO]):
+    is_valid = validate_text(message, [constants.TELEGRAM_YES, constants.TELEGRAM_NO])
+    if is_valid == True:
         user = authorize_user(message.from_user.id)
         try:
             course = Course.objects.get(id=course_id)
@@ -113,14 +133,42 @@ def finish_leave_review(message, course_id, text):
         )
         bot.send_message(message.from_user.id, 'Отзыв сохранен')
         main_menu(course_id, user.telegram_id)
+    elif is_valid == False:
+        bot.clear_step_handler(message)
+        bot.register_next_step_handler(message, finish_leave_review, course_id, message.text)
     else:
-        finish_leave_review(message, course_id, text)
+        return
 
 
-def validate_text(text, valid_texts):
-    if text in valid_texts:
+def get_pagination_markup(with_more=False):
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    if with_more:
+        keyboard.add(constants.TELEGRAM_MORE_REVIEWS)
+    keyboard.add(constants.TELEGRAM_BACK)
+    return keyboard
+
+
+def get_main_markup():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(constants.TELEGRAM_VIEW_REVIEWS)
+    markup.add(constants.TELEGRAM_LEAVE_REVIEW)
+    return markup
+
+
+def get_yes_no_markup():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(constants.TELEGRAM_YES)
+    markup.add(constants.TELEGRAM_NO)
+    return markup
+
+
+def validate_text(message, valid_texts):
+    if '/start' in message.text:
+        handle_start(message)
+        return None
+    elif message.text in valid_texts:
         return True
-    bot.send_message('Неверная команда')
+    bot.send_message(message.from_user.id, 'Неверная команда')
     return False
 
 
@@ -171,3 +219,5 @@ def serialize_review(review):
 {review.text}
 
 {_date(review.created_at, "d M, Y")}"""
+
+# start_bot.delay()
