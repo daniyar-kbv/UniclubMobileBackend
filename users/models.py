@@ -18,4 +18,4 @@ class Profile(models.Model):
         verbose_name_plural = 'Профили'
 
     def __str__(self):
-        return f'({self.id}) {self.user}'
+        return f'{self.user}'

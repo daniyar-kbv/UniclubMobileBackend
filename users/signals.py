@@ -9,6 +9,6 @@ import constants
 
 
 @receiver(post_save, sender=User)
-def course_saved(sender, instance, created, **kwargs):
+def user_saved(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)

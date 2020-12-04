@@ -75,6 +75,7 @@ def handle_view_reviews(message, course_id, from_, to_):
     if is_valid == True:
         if message.text in [constants.TELEGRAM_VIEW_REVIEWS, constants.TELEGRAM_MORE_REVIEWS]:
             user = authorize_user(message.from_user.id)
+            print()
             try:
                 course = Course.objects.get(id=course_id)
             except:

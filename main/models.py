@@ -57,7 +57,7 @@ class Course(TimestampModel):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'({self.id}) {self.name}'
+        return f'{self.name}'
 
     def clean(self):
         if self.from_age >= self.to_age:
@@ -84,7 +84,7 @@ class CourseImage(TimestampModel):
         ordering = ['is_main', 'id']
 
     def __str__(self):
-        return f'({self.id}) {self.course}'
+        return f'{self.course}: {self.image}'
 
     def save(self, *args, **kwargs):
         if self.id is None:
@@ -135,7 +135,7 @@ class WeekDay(TimestampModel):
         ordering = ['day']
 
     def __str__(self):
-        return f'({self.id}) {general.get_value_from_choices(constants.WEEKDAYS, self.day)}'
+        return f'{self.course.name}: {general.get_value_from_choices(constants.WEEKDAYS, self.day)}'
 
 
 class LessonTime(TimestampModel):
@@ -154,7 +154,8 @@ class LessonTime(TimestampModel):
         ordering = ['weekday', 'from_time', 'to_time']
 
     def __str__(self):
-        return f'({self.id}) {self.from_time}-{self.to_time}'
+        return f'{self.weekday.course.name} ({general.get_value_from_choices(constants.WEEKDAYS, self.weekday.day)}):' \
+               f' {self.from_time}-{self.to_time}'
 
     def clean(self):
         if self.from_time >= self.to_time:
@@ -166,6 +167,15 @@ class TelegramUser(TimestampModel):
     username = models.CharField(max_length=100, null=True, blank=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        if self.first_name and self.username:
+            name = f'{self.first_name} (@{self.username})'
+        elif self.first_name and self.last_name and self.username:
+            name = f'{self.first_name} {self.last_name} (@{self.username})'
+        else:
+            name = f'@{self.username}'
+        return name
 
 
 class CourseReview(TimestampModel):
@@ -190,4 +200,9 @@ class CourseReview(TimestampModel):
     )
 
     class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
         ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.course.name} {self.created_at.strftime(constants.DATETIME_FORMAT)}'

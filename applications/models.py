@@ -17,7 +17,7 @@ class PartnershipApplication(TimestampModel):
     mobile_phone = PhoneNumberField("Мобильный телефон", null=True, blank=True)
 
     def __str__(self):
-        return f"{self.name}({self.company_name})"
+        return f"{self.name} ({self.company_name})"
 
 
 class BookingApplication(TimestampModel):
@@ -31,7 +31,7 @@ class BookingApplication(TimestampModel):
         verbose_name_plural = 'Заявки на бронирование'
 
     def __str__(self):
-        return f'({self.id}) {self.first_name} {self.last_name}'
+        return f'{self.first_name} {self.last_name}'
 
 
 class CourseBooking(TimestampModel):
@@ -58,4 +58,4 @@ class CourseBooking(TimestampModel):
         verbose_name_plural = 'Бронирования курсов'
 
     def __str__(self):
-        return f'({self.id}) {self.course}'
+        return f'{self.course.name}'

@@ -17,7 +17,7 @@ class GradeTypeGroup(TimestampModel):
         verbose_name_plural = 'Группы занятий'
 
     def __str__(self):
-        return f'({self.id}) {self.name}'
+        return f'{self.name}'
 
 
 class GradeType(TimestampModel):
@@ -35,7 +35,7 @@ class GradeType(TimestampModel):
     )
 
     def __str__(self):
-        return f'({self.id}) {self.name}'
+        return f'{self.name} ({self.group.name})'
 
 
 class AdministrativeDivision(TimestampModel):
@@ -46,7 +46,7 @@ class AdministrativeDivision(TimestampModel):
     name = models.CharField("Название", max_length=256)
 
     def __str__(self):
-        return f'({self.id}) {self.name}'
+        return f'{self.name}'
 
 
 class AgeGroup(TimestampModel):
@@ -59,7 +59,7 @@ class AgeGroup(TimestampModel):
         ordering = ['from_age']
 
     def __str__(self):
-        return f'({self.id}) {self.from_age} - {self.to_age}'
+        return f'{self.from_age} - {self.to_age}'
 
 
 class AttendanceType(TimestampModel):
@@ -70,4 +70,4 @@ class AttendanceType(TimestampModel):
         verbose_name_plural = 'Виды посещения'
 
     def __str__(self):
-        return f'({self.id}) {self.name}'
+        return f'{self.name}'
