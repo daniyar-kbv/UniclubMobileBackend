@@ -58,12 +58,13 @@ def handle_review(message, course_id, from_=None, to_=None):
 
 
 def hanle_view_reviews(message, course_id, user, from_, to_):
+    print('1')
     try:
         course = Course.objects.get(id=course_id)
     except:
-        print("asd")
         bot.send_message(user.telegram_id, 'Занятие не найдено')
         return
+    print('2')
     from_ = from_ if from_ else 0
     to_ = to_ if to_ else 10
     reviews = course.reviews.all()[from_:to_]
