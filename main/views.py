@@ -13,7 +13,7 @@ from .serializers import CourseListSerializer
 from .filters import CoursesMobileFilterBackend
 from other.models import AgeGroup
 from utils import pagination, test_data
-from utils.telegrambot import bot
+from utils.telegrambot_v2 import bot
 
 import constants, datetime, telebot
 
