@@ -1,6 +1,7 @@
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 DATE_FORMAT = '%Y-%m-%d'
 TIME_FORMAT = '%H:%M:%S'
+TIME_FORMAT_SHORT = '%H:%M'
 
 MONDAY = 0
 TUESDAY = 1
@@ -45,3 +46,5 @@ TELEGRAM_BACK = 'Назад'
 TELEGRAM_YES = 'Да'
 TELEGRAM_NO = 'Нет'
 TELEGRAM_PAGE_NUMBER = 5
+
+APPLICATIONS_EMAIL = 'uniclub81@gmail.com'

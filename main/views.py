@@ -2,14 +2,14 @@ from django.db.models import Q
 
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
-from rest_framework.mixins import ListModelMixin, CreateModelMixin
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 
 from .models import Course
-from .serializers import CourseListSerializer
+from .serializers import CourseListSerializer, CourseDetailSerializer
 from .filters import CoursesMobileFilterBackend
 from other.models import AgeGroup
 from utils import pagination, test_data
@@ -19,7 +19,8 @@ import constants, datetime, telebot
 
 
 class CourseViewSet(GenericViewSet,
-                    ListModelMixin):
+                    ListModelMixin,
+                    RetrieveModelMixin):
     queryset = Course.objects.all()
     filter_backends = [CoursesMobileFilterBackend]
     pagination_class = pagination.CustomPagination
@@ -65,6 +66,8 @@ class CourseViewSet(GenericViewSet,
     def get_serializer_class(self):
         if self.action == 'list':
             return CourseListSerializer
+        if self.action == 'retrieve':
+            return CourseDetailSerializer
         return CourseListSerializer
 
 

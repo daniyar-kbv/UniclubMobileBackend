@@ -13,7 +13,7 @@ import random
 class CourseProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['tg_username', 'website_url']
+        fields = ['website_url', 'about_club', 'contacts']
 
 
 class CourseUserSerializer(serializers.ModelSerializer):
@@ -39,6 +39,23 @@ class WeekdayListSerializer(serializers.ModelSerializer):
 
 
 class CourseListSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    user = CourseUserSerializer()
+
+    class Meta:
+        model = Course
+        fields = ['id', 'name', 'short_description', 'image', 'user']
+
+    def get_image(self, obj):
+        image = CourseImage.objects.filter(course=obj).order_by('-is_main').first()
+        if image:
+            url = f'{image.image.url}'.replace('/media/uniclub_mobile/media/test_photos/', '/media/test_photos/')
+            url = self.context.get('request').build_absolute_uri(url)
+            return url
+        return None
+
+
+class CourseDetailSerializer(serializers.ModelSerializer):
     weekdays = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
     user = CourseUserSerializer()
@@ -53,10 +70,9 @@ class CourseListSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_images(self, obj):
-        images = CourseImage.objects.filter(course=obj)
+        images = CourseImage.objects.filter(course=obj).order_by('-is_main')
         urls = []
         for image in images:
             url = f'{image.image.url}'.replace('/media/uniclub_mobile/media/test_photos/', '/media/test_photos/')
             urls.append(self.context.get('request').build_absolute_uri(url))
         return urls
-

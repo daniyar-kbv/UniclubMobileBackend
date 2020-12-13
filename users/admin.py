@@ -6,7 +6,7 @@ from .models import Profile
 admin.site.unregister(User)
 
 
-class ProfileInline(admin.TabularInline):
+class ProfileInline(admin.StackedInline):
     model = Profile
 
 
@@ -16,6 +16,13 @@ class UserAdmin(admin.ModelAdmin):
     fields = ['username', 'password', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'is_superuser',
               'groups']
     list_display = ['username', 'first_name', 'last_name', 'date_joined']
+
+    def get_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            for field in ['is_staff', 'is_active', 'is_superuser', 'groups', 'password']:
+                if self.fields.__contains__(field):
+                    self.fields.remove(field)
+        return self.fields
 
     def save_model(self, request, obj, form, change):
         obj.set_password(obj.password)

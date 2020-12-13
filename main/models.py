@@ -12,6 +12,7 @@ import constants
 
 class Course(TimestampModel):
     name = models.CharField('Название', max_length=500)
+    short_description = models.CharField('Краткое описание', max_length=100, null=True, blank=False)
     description = models.TextField('Описание')
     from_age = models.PositiveSmallIntegerField('Возраст от', null=True)
     to_age = models.PositiveSmallIntegerField('Возраст до', null=True)
@@ -60,7 +61,10 @@ class Course(TimestampModel):
         return f'{self.name}'
 
     def clean(self):
-        if self.from_age >= self.to_age:
+        if self.from_age and self.to_age:
+            if self.from_age >= self.to_age:
+                raise ValidationError("Возраст от должен быть меньше возраста до")
+        else:
             raise ValidationError("Возраст от должен быть меньше возраста до")
 
 
@@ -154,8 +158,9 @@ class LessonTime(TimestampModel):
         ordering = ['weekday', 'from_time', 'to_time']
 
     def __str__(self):
-        return f'{self.weekday.course.name} ({general.get_value_from_choices(constants.WEEKDAYS, self.weekday.day)}):' \
-               f' {self.from_time}-{self.to_time}'
+        return f'{general.get_value_from_choices(constants.WEEKDAYS, self.weekday.day)}:' \
+               f' {self.from_time.strftime(constants.TIME_FORMAT_SHORT)}-' \
+               f'{self.to_time.strftime(constants.TIME_FORMAT_SHORT)}'
 
     def clean(self):
         if self.from_time >= self.to_time:

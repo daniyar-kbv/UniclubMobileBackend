@@ -32,6 +32,8 @@ class BookingApplicationCreateSerializer(serializers.ModelSerializer):
                 course=course
             )
             booking.lesson_times.set(times.filter(weekday__course=course))
+        application._created = True
+        application.save()
         return application
 
 

@@ -9,9 +9,10 @@ class Profile(models.Model):
         verbose_name='Пользователь',
         related_name='profile'
     )
-    tg_username = models.CharField('Имя пользователя в телеграме', max_length=100, null=True, blank=True)
     website_url = models.URLField('Адрес вебсайта', null=True, blank=True)
     club_name = models.CharField('Название клуба', max_length=100, null=True, blank=True)
+    about_club = models.TextField('О клубе', null=True, blank=True)
+    contacts = models.TextField('Контактная информация', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Профиль'

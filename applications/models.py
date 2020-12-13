@@ -15,6 +15,7 @@ class PartnershipApplication(TimestampModel):
     company_name = models.CharField("Название компании", max_length=256, null=True, blank=False)
     email = models.EmailField("e-mail", null=True, blank=True)
     mobile_phone = PhoneNumberField("Мобильный телефон", null=True, blank=True)
+    is_processed = models.BooleanField('Обработано', default=False, null=False, blank=True)
 
     def __str__(self):
         return f"{self.name} ({self.company_name})"
@@ -25,6 +26,7 @@ class BookingApplication(TimestampModel):
     last_name = models.CharField('Фамилия', max_length=100)
     phone_number = PhoneNumberField('Номер телефона')
     email = models.EmailField('Email')
+    is_processed = models.BooleanField('Обработано', default=False, null=False, blank=True)
 
     class Meta:
         verbose_name = 'Заявка на бронирование'
@@ -44,7 +46,14 @@ class CourseBooking(TimestampModel):
     lesson_times = models.ManyToManyField(
         LessonTime,
         verbose_name='Время занятий',
-        related_name='course_bookings'
+        related_name='course_bookings',
+        blank=True
+    )
+    lesson_times_confirmed = models.ManyToManyField(
+        LessonTime,
+        verbose_name='Время занятий подтвержденные партнером',
+        related_name='course_bookings_confirmed',
+        blank=True
     )
     booking_application = models.ForeignKey(
         BookingApplication,

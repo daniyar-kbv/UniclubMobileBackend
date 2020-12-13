@@ -18,9 +18,33 @@ class CourseListFilter(admin.SimpleListFilter):
         return queryset.filter(course_id=self.value()) if self.value() else queryset
 
 
+class CourseListGradeTypeFilter(admin.SimpleListFilter):
+    title = 'Вид занятия'
+    parameter_name = 'grade_type'
+
+    def lookups(self, request, model_admin):
+        return map(
+            lambda type:
+            (type.id, type.name),
+            filter(
+                lambda type:
+                type.courses.filter(user=request.user).count() > 0,
+                list(GradeType.objects.all())
+            )
+        )
+
+    def queryset(self, request, queryset):
+        return queryset.filter(grade_type_id=self.value()) if self.value() else queryset
+
+
 class CourseReviewInline(NestedTabularInline):
     model = CourseReview
     extra = 0
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            self.readonly_fields = ['user', 'text', 'is_anonymous']
+        return self.readonly_fields
 
 
 class LessonTimeInline(NestedTabularInline):
@@ -33,6 +57,9 @@ class WeekdayInline(NestedTabularInline):
     extra = 0
     inlines = [LessonTimeInline]
     readonly_fields = ['day']
+
+    def has_add_permission(self, request, obj):
+        return False
 
 
 class CourseImageInline(NestedTabularInline):
@@ -51,6 +78,7 @@ def tagform_factory(group):
 @admin.register(Course)
 class CourseAdmin(NestedModelAdmin):
     list_display = ['name', 'created_at']
+    list_filter = []
     inlines = [CourseImageInline, WeekdayInline, CourseReviewInline]
 
     def get_queryset(self, request):
@@ -76,6 +104,13 @@ class CourseAdmin(NestedModelAdmin):
         if obj is not None and obj.grade_group is not None:
             kwargs['form'] = tagform_factory(obj.grade_group)
         return super(CourseAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_list_filter(self, request):
+        if not request.user.is_superuser and not self.list_filter.__contains__(CourseListGradeTypeFilter):
+            self.list_filter.append(CourseListGradeTypeFilter)
+        elif request.user.is_superuser and not self.list_filter.__contains__('grade_type'):
+            self.list_filter.append('grade_type')
+        return self.list_filter
 
 
 @admin.register(CourseReview)
