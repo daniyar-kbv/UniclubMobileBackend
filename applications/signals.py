@@ -10,7 +10,6 @@ import constants
 
 @receiver(post_save, sender=PartnershipApplication)
 def partnership_application_saved(sender, instance, created, **kwargs):
-    print('asd')
     if created:
         send_email.delay(
             'Новая заявка на партнерство',
