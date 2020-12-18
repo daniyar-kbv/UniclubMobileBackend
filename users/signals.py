@@ -8,7 +8,7 @@ from utils import general
 import constants
 
 
-@receiver(post_save, sender=User)
-def user_saved(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def user_saved(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
