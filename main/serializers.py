@@ -13,7 +13,7 @@ import random
 class CourseProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['website_url', 'about_club', 'contacts']
+        fields = ['website_url', 'about_club', 'club_name', 'contacts']
 
 
 class CourseUserSerializer(serializers.ModelSerializer):
