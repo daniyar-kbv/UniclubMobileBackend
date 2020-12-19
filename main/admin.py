@@ -57,6 +57,7 @@ class WeekdayInline(NestedTabularInline):
     extra = 0
     inlines = [LessonTimeInline]
     readonly_fields = ['day']
+    template = 'tabular_nested_custom.html'
 
     def has_add_permission(self, request, obj):
         return False

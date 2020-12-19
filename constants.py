@@ -36,6 +36,7 @@ TELEGRAM_BOT_URL = f'https://server.uniclub.kz/main/bot/'
 TELEGRAM_DATETIME_FORMAT = '%d %B, %Y'
 
 TELEGRAM_ACTION_VIEW_REVIEWS = 'view_reviews'
+TELEGRAM_ACTION_MORE_REVIEWS = 'more_reviews'
 TELEGRAM_ACTION_LEAVE_REVIEW = 'leave_review'
 TELEGRAM_ACTION_BACK = 'back'
 
