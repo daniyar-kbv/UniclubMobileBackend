@@ -7,10 +7,8 @@ from main.models import TelegramUser, Course, CourseReview
 from telebot import types
 import telebot, constants, datetime, os
 
-# bot = telebot.TeleBot(os.environ.get('TELEGRAM_BOT_TOKEN'))
-# bot.set_webhook(url=constants.TELEGRAM_BOT_URL)
-
-bot = telebot.TeleBot('1333421647:AAFlrpRUnMSUf3SVQZwNTyr33r4r99cJG2o')
+bot = telebot.TeleBot(os.environ.get('TELEGRAM_BOT_TOKEN'))
+bot.set_webhook(url=constants.TELEGRAM_BOT_URL)
 
 @shared_task
 def start_bot():
@@ -257,21 +255,21 @@ def serialize_review(review):
 
 {_date(review.created_at, "d M, Y")}"""
 
-app.control.purge()
-
-i = app.control.inspect()
-jobs = i.active()
-if jobs:
-    for hostname in jobs:
-        tasks = jobs[hostname]
-        for task in tasks:
-            app.control.revoke(task['id'], terminate=True)
-
-jobs = i.reserved()
-if jobs:
-    for hostname in jobs:
-        tasks = jobs[hostname]
-        for task in tasks:
-            app.control.revoke(task['id'], terminate=True)
-
-start_bot.delay()
+# app.control.purge()
+#
+# i = app.control.inspect()
+# jobs = i.active()
+# if jobs:
+#     for hostname in jobs:
+#         tasks = jobs[hostname]
+#         for task in tasks:
+#             app.control.revoke(task['id'], terminate=True)
+#
+# jobs = i.reserved()
+# if jobs:
+#     for hostname in jobs:
+#         tasks = jobs[hostname]
+#         for task in tasks:
+#             app.control.revoke(task['id'], terminate=True)
+#
+# start_bot.delay()
