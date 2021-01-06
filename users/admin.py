@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+from django import forms
 
 from .models import Profile
 
@@ -11,22 +13,31 @@ class ProfileInline(admin.StackedInline):
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(UserAdmin):
     inlines = [ProfileInline]
-    fields = ['username', 'password', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'is_superuser',
-              'groups']
+    fieldsets = [
+        (None, {
+            'fields': ('username', 'password')
+        }),
+        ('Персональная информация', {
+            'fields': ('first_name', 'last_name', 'email')
+        }),
+        ('Разрешения', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups'),
+        }),
+    ]
+    add_fieldsets = [
+        (None, {
+            'classes': ('wide',),
+            'fields': ('password1', 'password2'),
+        }),
+    ]
     list_display = ['username', 'first_name', 'last_name', 'date_joined']
 
-    def get_fields(self, request, obj=None):
+    def get_fieldsets(self, request, obj=None):
         if not request.user.is_superuser:
-            for field in ['is_staff', 'is_active', 'is_superuser', 'groups', 'password']:
-                if self.fields.__contains__(field):
-                    self.fields.remove(field)
-        return self.fields
-
-    def save_model(self, request, obj, form, change):
-        obj.set_password(obj.password)
-        obj.save()
+            return self.fieldsets[:2]
+        return self.fieldsets
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -43,7 +43,7 @@ class CourseReviewInline(NestedTabularInline):
 
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
-            self.readonly_fields = ['user', 'text', 'is_anonymous']
+            return ['user', 'text', 'is_anonymous']
         return self.readonly_fields
 
 
@@ -107,11 +107,12 @@ class CourseAdmin(NestedModelAdmin):
         return super(CourseAdmin, self).get_form(request, obj, **kwargs)
 
     def get_list_filter(self, request):
+        list_filters = self.list_filter
         if not request.user.is_superuser and not self.list_filter.__contains__(CourseListGradeTypeFilter):
-            self.list_filter.append(CourseListGradeTypeFilter)
+            list_filters.append(CourseListGradeTypeFilter)
         elif request.user.is_superuser and not self.list_filter.__contains__('grade_type'):
-            self.list_filter.append('grade_type')
-        return self.list_filter
+            list_filters.append('grade_type')
+        return list_filters
 
 
 @admin.register(CourseReview)
@@ -121,14 +122,21 @@ class CourseReviewAdmin(admin.ModelAdmin):
     fields = ['user', 'course', 'text', 'is_anonymous']
     readonly_fields = ['user', 'course', 'text', 'is_anonymous']
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(course__user=request.user)
+        return qs
+
     def get_list_filter(self, request):
+        list_filters = self.list_filter
         if not request.user.is_superuser and not self.list_filter.__contains__(CourseListFilter):
-            self.list_filter.append(CourseListFilter)
+            list_filters.append(CourseListFilter)
         elif request.user.is_superuser and not self.list_filter.__contains__('course'):
-            self.list_filter.append('course')
-        return self.list_filter
+            list_filters.append('course')
+        return list_filters
 
     def get_fields(self, request, obj=None):
         if obj.is_anonymous:
-            self.fields.remove('user')
+            return filter(lambda field: field != 'user', self.fields)
         return self.fields
