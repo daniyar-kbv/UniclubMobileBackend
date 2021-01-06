@@ -76,13 +76,15 @@ class BookingApplicationAdmin(admin.ModelAdmin):
         return qs
 
     def get_readonly_fields(self, request, obj=None):
+        readonly_fields = self.readonly_fields
         if not request.user.is_superuser:
             for field in ['first_name', 'last_name', 'is_processed']:
-                self.readonly_fields.append(field)
-        return self.readonly_fields
+                readonly_fields.append(field)
+        return readonly_fields
 
     def get_fields(self, request, obj=None):
+        fields = self.fields
         if not request.user.is_superuser:
             for field in ['phone_number', 'email']:
-                self.fields.remove(field)
-        return self.fields
+                fields.remove(field)
+        return fields
