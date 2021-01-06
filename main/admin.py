@@ -107,7 +107,7 @@ class CourseAdmin(NestedModelAdmin):
         return super(CourseAdmin, self).get_form(request, obj, **kwargs)
 
     def get_list_filter(self, request):
-        list_filters = self.list_filter
+        list_filters = self.list_filter.copy()
         if not request.user.is_superuser and not self.list_filter.__contains__(CourseListGradeTypeFilter):
             list_filters.append(CourseListGradeTypeFilter)
         elif request.user.is_superuser and not self.list_filter.__contains__('grade_type'):
@@ -129,7 +129,7 @@ class CourseReviewAdmin(admin.ModelAdmin):
         return qs
 
     def get_list_filter(self, request):
-        list_filters = self.list_filter
+        list_filters = self.list_filter.copy()
         if not request.user.is_superuser and not self.list_filter.__contains__(CourseListFilter):
             list_filters.append(CourseListFilter)
         elif request.user.is_superuser and not self.list_filter.__contains__('course'):
