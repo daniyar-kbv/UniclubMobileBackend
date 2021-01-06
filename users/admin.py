@@ -49,3 +49,8 @@ class UserAdmin(UserAdmin):
         if not request.user.is_superuser:
             return []
         return self.list_filter
+
+    def get_search_fields(self, request):
+        if not request.user.is_superuser:
+            return []
+        return self.search_fields
