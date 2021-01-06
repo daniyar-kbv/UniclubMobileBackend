@@ -44,3 +44,8 @@ class UserAdmin(UserAdmin):
         if not request.user.is_superuser:
             qs = qs.filter(id=request.user.id)
         return qs
+
+    def get_list_filter(self, request):
+        if not request.user.is_superuser:
+            return []
+        return self.list_filter
