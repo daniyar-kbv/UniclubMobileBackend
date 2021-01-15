@@ -29,15 +29,21 @@ class UserAdmin(UserAdmin):
     add_fieldsets = [
         (None, {
             'classes': ('wide',),
-            'fields': ('password1', 'password2'),
+            'fields': ('username', 'password1', 'password2'),
+        }),
+        ('Персональная информация', {
+            'fields': ('first_name', 'last_name', 'email')
+        }),
+        ('Разрешения', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups'),
         }),
     ]
     list_display = ['username', 'first_name', 'last_name', 'date_joined']
 
-    def get_fieldsets(self, request, obj=None):
-        if not request.user.is_superuser:
-            return self.fieldsets[:2]
-        return self.fieldsets
+    # def get_fieldsets(self, request, obj=None):
+    #     if not request.user.is_superuser:
+    #         return self.fieldsets[:2]
+    #     return self.fieldsets
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
