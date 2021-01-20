@@ -13,6 +13,7 @@ class Profile(models.Model):
     club_name = models.CharField('Название клуба', max_length=100, null=True, blank=True)
     about_club = models.TextField('О клубе', null=True, blank=True)
     contacts = models.TextField('Контактная информация', null=True, blank=True)
+    club_is_active = models.BooleanField('Клуб активен', default=False, null=False)
 
     class Meta:
         verbose_name = 'Профиль'

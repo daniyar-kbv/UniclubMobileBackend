@@ -71,6 +71,7 @@ class CourseImageInline(NestedTabularInline):
 def tagform_factory(group):
     class TypeForm(forms.ModelForm):
         grade_type = forms.ModelChoiceField(
+            label='Вид занятия',
             queryset=GradeType.objects.filter(group=group)
         )
     return TypeForm
