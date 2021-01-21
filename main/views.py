@@ -21,7 +21,7 @@ import constants, datetime, telebot
 class CourseViewSet(GenericViewSet,
                     ListModelMixin,
                     RetrieveModelMixin):
-    queryset = Course.objects.filter(user__profile__club_is_active=True)
+    queryset = Course.objects.filter(user__profile__club_is_active=True, is_active=True)
     filter_backends = [CoursesMobileFilterBackend]
     pagination_class = pagination.CustomPagination
 
