@@ -38,8 +38,8 @@ services:
       pip install -r requirements.txt &&
       python manage.py migrate &&
       python manage.py collectstatic --no-input --clear &&
-#      python manage.py runserver 0:8990"
       gunicorn uniclub_mobile.wsgi:application --bind 0.0.0.0:8990"
+    #      python manage.py runserver 0:8990"
     volumes:
       - .:/uniclub_mobile
     ports:
