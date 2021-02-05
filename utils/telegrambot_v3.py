@@ -10,9 +10,10 @@ import telebot, constants, datetime, os
 bot = telebot.TeleBot(os.environ.get('TELEGRAM_BOT_TOKEN'))
 bot.set_webhook(url=constants.TELEGRAM_BOT_URL)
 
-@shared_task
-def start_bot():
-    bot.polling()
+
+# @shared_task
+# def start_bot():
+#     bot.polling()
 
 
 @bot.message_handler(commands=['start'])
@@ -25,7 +26,6 @@ def handle_start(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
     parameters = parse_parameters(call)
-    print(parameters)
     bot.edit_message_reply_markup(
         chat_id=call.message.chat.id,
         message_id=call.message.id,
@@ -45,6 +45,7 @@ def callback_worker(call):
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
     bot.send_message(message.from_user.id, '⬆️Выберите дейсвие⬆️')
+
 
 def main_menu(course_id, user_id):
     if course_id:

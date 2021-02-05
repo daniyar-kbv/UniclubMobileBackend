@@ -58,6 +58,12 @@ class CourseViewSet(GenericViewSet,
                     weekdays__lesson_times__from_time__gte=datetime.time(hour=12, minute=0, second=0))
         return queryset.distinct()
 
+    @action(detail=False, methods=['post'])
+    def test(self, request, pk=None):
+        from main.tasks import send_email
+        send_email(subject='Test', body='Test', to='daniyar_k-98@mail.ru')
+        return Response()
+
     # @action(detail=False, methods=['get'])
     # def test_data(self, request, pk=None):
     #     test_data.create_courses()
