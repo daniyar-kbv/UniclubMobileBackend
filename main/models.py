@@ -52,6 +52,7 @@ class Course(TimestampModel):
         null=True
     )
     is_active = models.BooleanField('Активное', default=False, null=False)
+    is_top = models.BooleanField('Топ', default=False, null=False)
 
     class Meta:
         verbose_name = 'Занятие'

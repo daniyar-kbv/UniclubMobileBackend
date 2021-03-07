@@ -56,7 +56,7 @@ class CourseViewSet(GenericViewSet,
             elif self.request.query_params.get('time') == constants.TIME_AFTER_LUNCH:
                 queryset = queryset.filter(
                     weekdays__lesson_times__from_time__gte=datetime.time(hour=12, minute=0, second=0))
-        return queryset.distinct()
+        return queryset.distinct().order_by('-is_top', '-created_at')
 
     @action(detail=False, methods=['post'])
     def test(self, request, pk=None):

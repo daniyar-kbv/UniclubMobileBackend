@@ -97,6 +97,11 @@ class CourseAdmin(NestedModelAdmin):
             del form.base_fields['user']
         return [*form.base_fields, *self.get_readonly_fields(request, obj)]
 
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return ['is_top']
+        return self.readonly_fields
+
     def save_model(self, request, obj, form, change):
         if not request.user.is_superuser:
             obj.user = request.user
