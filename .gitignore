@@ -92,3 +92,4 @@ myenv/
 .vscode/
 media/
 backups/
+.env.*
